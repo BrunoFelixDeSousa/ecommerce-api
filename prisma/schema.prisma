@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Definindo meus model
+model Product {
+  id               String   @id @default(uuid())
+  name             String   @db.VarChar(50)
+  sku              String   @unique @db.VarChar(50)
+  categoryId       String   @map("category_id")
+  description      String   @db.VarChar(250)
+  largeDescription String   @map("large_description") @db.VarChar(500)
+  price            Decimal
+  discountPrice    Decimal? @map("discount_price")
+  discountPercent  Float?   @map("discount_percente")
+  isNew            Boolean  @map("is_new")
+  imageLink        String?  @map("image_link") @db.VarChar(250)
+  otherImagesLink  String?  @map("other_images_link") @db.VarChar(1000)
+  createdDate      DateTime @default(now()) @map("created_date")
+  updatedDate      DateTime @updatedAt @map("updated_date")
+
+  Category Category @relation(fields: [categoryId], references: [id])
+
+  @@map("product")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(50)
+  imageLink   String?  @map("image_link") @db.VarChar(250)
+  createdDate DateTime @default(now()) @map("created_date")
+  updatedDate DateTime @updatedAt @map("updated_date")
+
+  // Relacionamento com o modelo Product
+  products Product[]
+
+  @@map("category")
+}
