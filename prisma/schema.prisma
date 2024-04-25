@@ -26,7 +26,7 @@ model Product {
   discountPercent  Float?   @map("discount_percente")
   isNew            Boolean  @map("is_new")
   imageLink        String?  @map("image_link") @db.VarChar(250)
-  otherImagesLink  String?  @map("other_images_link") @db.VarChar(1000)
+  otherImagesLink  String[] @map("other_images_link") @db.VarChar(1000)
   createdDate      DateTime @default(now()) @map("created_date")
   updatedDate      DateTime @updatedAt @map("updated_date")
 
