@@ -29,8 +29,10 @@ export class ProductController {
   findAllWithPagination(
     @Query('page') skip: string,
     @Query('pageSize') take: string,
+    @Query('sortBy') sortBy: string,
   ) {
-    return this.productService.findAllWithPagination(skip, take);
+    console.log(`-----------> ${sortBy}`);
+    return this.productService.findAllWithPagination(skip, take, sortBy);
   }
 
   // @Get()

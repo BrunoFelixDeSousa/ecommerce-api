@@ -18,9 +18,27 @@ export class ProductService {
     });
   }
 
-  async findAllWithPagination(page: string = '1', pageSize: string = '16') {
+  async findAllWithPagination(
+    page: string = '1',
+    pageSize: string = '16',
+    sortBy = 'default',
+  ) {
     const skip = (parseInt(page, 10) - 1) * parseInt(pageSize);
     const take = parseInt(pageSize);
+
+    let orderBy = {};
+
+    switch (sortBy) {
+      case 'price':
+        orderBy = { price: 'asc' };
+        break;
+      case 'isNew':
+        orderBy = { isNew: 'desc' };
+        break;
+      default:
+        // Nenhuma ordenação personalizada, deixe o padrão para encontrar produtos
+        break;
+    }
 
     const [products, total] = await this.prisma.$transaction([
       this.prisma.product.findMany({
@@ -40,6 +58,7 @@ export class ProductService {
         },
         skip,
         take,
+        orderBy,
       }),
       this.prisma.product.count(),
     ]);
