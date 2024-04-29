@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Prisma } from '@prisma/client';
@@ -25,9 +26,17 @@ export class ProductController {
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAllWithPagination(
+    @Query('page') skip: string,
+    @Query('pageSize') take: string,
+  ) {
+    return this.productService.findAllWithPagination(skip, take);
   }
+
+  // @Get()
+  // findAll() {
+  //   return this.productService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

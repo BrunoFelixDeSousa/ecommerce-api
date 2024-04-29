@@ -18,11 +18,42 @@ export class ProductService {
     });
   }
 
-  async findAll(): Promise<Product[]> {
-    return await this.prisma.product.findMany({
-      take: 8,
-    });
+  async findAllWithPagination(page: string = '1', pageSize: string = '16') {
+    const skip = (parseInt(page, 10) - 1) * parseInt(pageSize);
+    const take = parseInt(pageSize);
+
+    const [products, total] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        select: {
+          id: true,
+          name: true,
+          sku: true,
+          categoryId: true,
+          description: true,
+          largeDescription: true,
+          price: true,
+          discountPrice: true,
+          discountPercent: true,
+          isNew: true,
+          imageLink: true,
+          otherImagesLink: true,
+        },
+        skip,
+        take,
+      }),
+      this.prisma.product.count(),
+    ]);
+
+    const totalPage = Math.ceil(total / parseInt(pageSize));
+
+    return { total, products, totalPage };
   }
+
+  // async findAll(): Promise<Product[]> {
+  //   return await this.prisma.product.findMany({
+  //     take: 16,
+  //   });
+  // }
 
   async findOne(id: string): Promise<Product | null> {
     return await this.prisma.product.findUnique({
