@@ -31,7 +31,6 @@ export class ProductController {
     @Query('pageSize') take: string,
     @Query('sortBy') sortBy: string,
   ) {
-    console.log(`-----------> ${sortBy}`);
     return this.productService.findAllWithPagination(skip, take, sortBy);
   }
 
